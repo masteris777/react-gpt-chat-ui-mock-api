@@ -11,6 +11,23 @@ function convertToBase64Chunk(str) {
 	return `${Buffer.from(str).toString("base64")}\n`;
 }
 
+app.get("/api/models", async (req, res) => {
+	console.log("got models request");
+	res.json({
+		models: [
+			{
+				name: "GPT-1",
+			},
+			{
+				name: "GPT-2",
+			},
+			{
+				name: "GPT-3",
+			},
+		],
+	});
+});
+
 app.post("/api/summaries", async (req, res) => {
 	console.log("got summary request");
 	const { messages } = req.body;
@@ -23,6 +40,7 @@ app.post("/api/summaries", async (req, res) => {
 });
 
 app.post("/api/models/:model/conversations", async (req, res) => {
+	console.log("got conversations request");
 	const { messages } = req.body;
 	if (!messages || !messages[0]) {
 		console.log("no messages");
