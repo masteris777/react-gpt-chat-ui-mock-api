@@ -51,12 +51,12 @@ async def get_models():
 
 
 @app.post("/api/summaries")
-async def get_summary(message: List[Message]):
+async def get_summary(conversation: Conversation):
     print("got summary request")
-    if not message or not message[0].text:
+    if not conversation or not conversation.messages or not conversation.messages[0].text:
         print("no messages")
         raise HTTPException(status_code=400, detail="Message is required")
-    return {"summary": message[0].text[:20]}
+    return {"summary": conversation.messages[0].text[:20]}
 
 
 @app.post("/api/models/{model}/conversations")
@@ -73,7 +73,7 @@ async def create_conversation(model: str, conversation: Conversation):
     async def generate():
         while words:
             await asyncio.sleep(0.1)  # Simulate delay
-            yield base64.b64encode(words.pop(0).encode()).decode() + "\n"
+            yield base64.b64encode((words.pop(0)+" ").encode()).decode() + "\n"
 
     return StreamingResponse(generate(), media_type="text/plain")
 
